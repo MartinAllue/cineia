@@ -26,8 +26,8 @@ export async function GET(request: Request) {
     const params: Parameters<typeof discoverMovies>[0] = { page }
     if (sortBy) params.sort_by = sortBy
     if (year) {
-      params['release_date.gte'] = `${year}-01-01`
-      params['release_date.lte'] = `${year}-12-31`
+      params['primary_release_date.gte'] = `${year}-01-01`
+      params['primary_release_date.lte'] = `${year}-12-31`
     }
     if (minRating) params['vote_average.gte'] = parseFloat(minRating)
     if (maxRating) params['vote_average.lte'] = parseFloat(maxRating)

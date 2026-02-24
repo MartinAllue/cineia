@@ -177,8 +177,8 @@ export const getMoviesByGenre = async (genreId: number, page = 1, year?: string)
   const tmdb = axios.create({ baseURL: TMDB_API_URL, params: { api_key: TMDB_API_KEY, language: 'es-ES' } })
   const params: Record<string, string | number> = { with_genres: genreId, page }
   if (year) {
-    params['release_date.gte'] = `${year}-01-01`
-    params['release_date.lte'] = `${year}-12-31`
+    params['primary_release_date.gte'] = `${year}-01-01`
+    params['primary_release_date.lte'] = `${year}-12-31`
   }
   const { data } = await tmdb.get('/discover/movie', { params })
   return data
@@ -188,8 +188,8 @@ export const discoverMovies = async (params: {
   page?: number
   sort_by?: string
   with_genres?: number
-  'release_date.gte'?: string
-  'release_date.lte'?: string
+  'primary_release_date.gte'?: string
+  'primary_release_date.lte'?: string
   'vote_average.gte'?: number
   'vote_average.lte'?: number
   'vote_count.gte'?: number
