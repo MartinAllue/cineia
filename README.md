@@ -1,75 +1,97 @@
-# CineIA - Proyecto de Valoración y Reviews de Películas
+# CineIA - Proyecto de Películas
 
-Una aplicación web completa para explorar películas, valorarlas, escribir reseñas y crear listas personalizadas.
+Aplicación web para explorar películas, valorarlas, escribir reseñas y crear listas personalizadas.
 
-## Características
+---
 
-- 🔍 **Explorar películas** - Busca y filtra por género, año, rating
-- ⭐ **Sistema de valoración** - Valora películas del 1 al 5
-- 📝 **Reviews** - Escribe y lee reseñas de otros usuarios
-- ❤️ **Listas personalizadas** - Crea tus propias listas de películas
-- 👤 **Sistema de usuarios** - Registro y login con email
+## Cómo ejecutar el proyecto (PASO A PASO)
 
-## Tecnologías
+### Paso 1: Instalar Node.js
+Si no tienes Node.js, descárgalo desde: https://nodejs.org (versión LTS)
 
-- **Frontend**: Next.js 14 + React + Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Base de datos**: PostgreSQL + Prisma ORM
-- **Autenticación**: NextAuth.js
-- **Datos**: The Movie Database (TMDB) API
-
-## Requisitos
-
-- Node.js 18+
-- PostgreSQL
-
-## Instalación
-
-1. **Clona el repositorio**:
+### Paso 2: Descargar el proyecto
+Abre una terminal y ejecuta:
 ```bash
 git clone https://github.com/MartinAllue/cineia.git
 cd cineia
 ```
 
-2. **Instala las dependencias**:
+### Paso 3: Instalar dependencias
+En la carpeta del proyecto, ejecuta:
 ```bash
 npm install
 ```
 
-3. **Configura las variables de entorno**:
-Crea un archivo `.env` con:
+### Paso 4: Obtener API Key de TMDB (GRATIS)
+1. Ve a: https://www.themoviedb.org/settings/api
+2. Crea una cuenta (es gratis)
+3. Solicita una API key
+4. Copia la API key que te dan
+
+### Paso 5: Configurar archivo .env
+1. En la carpeta del proyecto, crea un archivo llamado `.env`
+2. Copia y pega esto (sustituye los valores):
+
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/cineia"
-NEXTAUTH_SECRET="tu-secret-key-aqui"
+DATABASE_URL="file:./prisma/dev.db"
+NEXTAUTH_SECRET="una-clave-secreta-cualquiera-muy-larga"
 NEXTAUTH_URL="http://localhost:3000"
-TMDB_API_KEY="tu-api-key-de-tmdb"
+TMDB_API_KEY="AQUI_TU_API_KEY_DE_TMDB"
 ```
 
-Para obtener una API key de TMDB:
-1. Ve a https://www.themoviedb.org/settings/api
-2. Crea una cuenta si no tienes
-3. Solicita una API key (es gratuita)
+**IMPORTANTE**: En `TMDB_API_KEY=` pon tu API key del paso 4.
 
-4. **Configura la base de datos**:
+### Paso 6: Configurar base de datos
+En la terminal, ejecuta:
 ```bash
 npx prisma migrate dev --name init
 ```
 
-5. **Inicia el servidor**:
+### Paso 7: Iniciar el proyecto
+Ejecuta:
 ```bash
 npm run dev
 ```
 
-6. Abre http://localhost:3000
+### Paso 8: Abrir en el navegador
+Ve a: http://localhost:3000
 
-## Uso
+---
 
-1. **Regístrate** en la página de login
-2. **Explora** películas en la home o usa el buscador
-3. **Valora** películas en su página detalle
-4. **Escribe reviews** compartiendo tu opinión
-5. **Crea listas** para guardar películas
+## Funcionalidades
+
+- Ver películas populares, top rated y en cartelera
+- Buscar películas por título
+- Valorar películas (1-5 estrellas)
+- Escribir reseñas
+- Crear listas personalizadas de películas
+- Registro e inicio de sesión
+
+---
+
+## Problemas comunes
+
+**Error al conectar con la base de datos:**
+- Asegúrate de haber ejecutado `npx prisma migrate dev --name init`
+
+**Error de TMDB:**
+- Verifica que tu API key esté bien puesta en el archivo .env
+
+**Puerto en uso:**
+- Cierra otras aplicaciones que usen el puerto 3000
+
+---
+
+## Tecnologías usadas
+
+- Next.js 14 (React)
+- Tailwind CSS
+- Prisma (base de datos)
+- NextAuth (autenticación)
+- TMDB API (datos de películas)
+
+---
 
 ## Autor
 
-MartinAllue
+Proyecto creado por MartinAllue
