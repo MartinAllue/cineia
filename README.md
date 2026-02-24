@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CineIA - Proyecto de Valoración y Reviews de Películas
 
-## Getting Started
+Una aplicación web completa para explorar películas, valorarlas, escribir reseñas y crear listas personalizadas.
 
-First, run the development server:
+## Características
 
+- 🔍 **Explorar películas** - Busca y filtra por género, año, rating
+- ⭐ **Sistema de valoración** - Valora películas del 1 al 5
+- 📝 **Reviews** - Escribe y lee reseñas de otros usuarios
+- ❤️ **Listas personalizadas** - Crea tus propias listas de películas
+- 👤 **Sistema de usuarios** - Registro y login con email
+
+## Tecnologías
+
+- **Frontend**: Next.js 14 + React + Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Base de datos**: PostgreSQL + Prisma ORM
+- **Autenticación**: NextAuth.js
+- **Datos**: The Movie Database (TMDB) API
+
+## Requisitos
+
+- Node.js 18+
+- PostgreSQL
+
+## Instalación
+
+1. **Clona el repositorio**:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/MartinAllue/cineia.git
+cd cineia
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Instala las dependencias**:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Configura las variables de entorno**:
+Crea un archivo `.env` con:
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/cineia"
+NEXTAUTH_SECRET="tu-secret-key-aqui"
+NEXTAUTH_URL="http://localhost:3000"
+TMDB_API_KEY="tu-api-key-de-tmdb"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Para obtener una API key de TMDB:
+1. Ve a https://www.themoviedb.org/settings/api
+2. Crea una cuenta si no tienes
+3. Solicita una API key (es gratuita)
 
-## Learn More
+4. **Configura la base de datos**:
+```bash
+npx prisma migrate dev --name init
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. **Inicia el servidor**:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6. Abre http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Uso
 
-## Deploy on Vercel
+1. **Regístrate** en la página de login
+2. **Explora** películas en la home o usa el buscador
+3. **Valora** películas en su página detalle
+4. **Escribe reviews** compartiendo tu opinión
+5. **Crea listas** para guardar películas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Autor
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MartinAllue
