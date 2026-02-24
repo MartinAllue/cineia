@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { getMovieDetails } from '@/lib/tmdb'
 
 type UserMovieList = {
   id: string
@@ -25,6 +26,31 @@ type Review = {
     name: string | null
     image: string | null
   }
+}
+
+type MovieInfo = {
+  id: number
+  title: string
+  poster_path: string | null
+}
+
+async function getMoviesInfo(movieIds: number[]): Promise<Map<number, MovieInfo>> {
+  const movieMap = new Map<number, MovieInfo>()
+  
+  for (const id of movieIds) {
+    try {
+      const movie = await getMovieDetails(id)
+      movieMap.set(id, {
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path
+      })
+    } catch {
+      movieMap.set(id, { id, title: `Película #${id}`, poster_path: null })
+    }
+  }
+  
+  return movieMap
 }
 
 export default async function ProfilePage() {
@@ -59,6 +85,10 @@ export default async function ProfilePage() {
   const wantToWatch = lists.filter((l: UserMovieList) => l.status === 'WANT_TO_WATCH')
   const watched = lists.filter((l: UserMovieList) => l.status === 'WATCHED')
 
+  const allMovieIds = [...favorites, ...wantToWatch, ...watched].map(l => l.movieId)
+  const uniqueIds = [...new Set(allMovieIds)]
+  const movieInfoMap = await getMoviesInfo(uniqueIds.slice(0, 20))
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-[#1a1a1a] rounded-lg p-6 mb-8">
@@ -88,15 +118,18 @@ export default async function ProfilePage() {
             <p className="text-gray-400 text-sm">No tienes películas favoritas</p>
           ) : (
             <div className="space-y-2">
-              {favorites.slice(0, 5).map((fav: UserMovieList) => (
-                <Link
-                  key={fav.id}
-                  href={`/movie/${fav.movieId}`}
-                  className="block text-gray-300 hover:text-red-500 text-sm truncate"
-                >
-                  ID: {fav.movieId}
-                </Link>
-              ))}
+              {favorites.slice(0, 5).map((fav: UserMovieList) => {
+                const movieInfo = movieInfoMap.get(fav.movieId)
+                return (
+                  <Link
+                    key={fav.id}
+                    href={`/movie/${fav.movieId}`}
+                    className="block text-gray-300 hover:text-red-500 text-sm truncate"
+                  >
+                    {movieInfo?.title || `Película #${fav.movieId}`}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
@@ -109,15 +142,18 @@ export default async function ProfilePage() {
             <p className="text-gray-400 text-sm">No tienes películas en tu lista</p>
           ) : (
             <div className="space-y-2">
-              {wantToWatch.slice(0, 5).map((item: UserMovieList) => (
-                <Link
-                  key={item.id}
-                  href={`/movie/${item.movieId}`}
-                  className="block text-gray-300 hover:text-red-500 text-sm truncate"
-                >
-                  ID: {item.movieId}
-                </Link>
-              ))}
+              {wantToWatch.slice(0, 5).map((item: UserMovieList) => {
+                const movieInfo = movieInfoMap.get(item.movieId)
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/movie/${item.movieId}`}
+                    className="block text-gray-300 hover:text-red-500 text-sm truncate"
+                  >
+                    {movieInfo?.title || `Película #${item.movieId}`}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
@@ -130,15 +166,18 @@ export default async function ProfilePage() {
             <p className="text-gray-400 text-sm">No has visto películas</p>
           ) : (
             <div className="space-y-2">
-              {watched.slice(0, 5).map((item: UserMovieList) => (
-                <Link
-                  key={item.id}
-                  href={`/movie/${item.movieId}`}
-                  className="block text-gray-300 hover:text-red-500 text-sm truncate"
-                >
-                  ID: {item.movieId}
-                </Link>
-              ))}
+              {watched.slice(0, 5).map((item: UserMovieList) => {
+                const movieInfo = movieInfoMap.get(item.movieId)
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/movie/${item.movieId}`}
+                    className="block text-gray-300 hover:text-red-500 text-sm truncate"
+                  >
+                    {movieInfo?.title || `Película #${item.movieId}`}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
@@ -152,26 +191,29 @@ export default async function ProfilePage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {reviews.map((review: Review) => (
-              <div key={review.id} className="bg-[#1a1a1a] rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Link
-                    href={`/movie/${review.movieId}`}
-                    className="text-white font-medium hover:text-red-500"
-                  >
-                    Película #{review.movieId}
-                  </Link>
-                  <span className="text-gray-500 text-sm">
-                    • {new Date(review.createdAt).toLocaleDateString('es-ES')}
-                  </span>
+            {reviews.map(async (review: Review) => {
+              const movieInfo = movieInfoMap.get(review.movieId) || { title: `Película #${review.movieId}` }
+              return (
+                <div key={review.id} className="bg-[#1a1a1a] rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Link
+                      href={`/movie/${review.movieId}`}
+                      className="text-white font-medium hover:text-red-500"
+                    >
+                      {movieInfo.title}
+                    </Link>
+                    <span className="text-gray-500 text-sm">
+                      • {new Date(review.createdAt).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                  <p className="text-yellow-500 text-sm mb-2">
+                    {'★'.repeat(Math.round(review.rating))}
+                    {'☆'.repeat(5 - Math.round(review.rating))}
+                  </p>
+                  <p className="text-gray-300 text-sm">{review.content}</p>
                 </div>
-                <p className="text-yellow-500 text-sm mb-2">
-                  {'★'.repeat(Math.round(review.rating))}
-                  {'☆'.repeat(5 - Math.round(review.rating))}
-                </p>
-                <p className="text-gray-300 text-sm">{review.content}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </section>
