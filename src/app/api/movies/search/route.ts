@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     }
 
     if (genre) {
-      const data = await getMoviesByGenre(parseInt(genre), page)
+      const data = await getMoviesByGenre(parseInt(genre), page, year || undefined)
       return NextResponse.json(data)
     }
 

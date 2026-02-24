@@ -172,10 +172,15 @@ export const getMovieGenres = async () => {
   return data
 }
 
-export const getMoviesByGenre = async (genreId: number, page = 1) => {
+export const getMoviesByGenre = async (genreId: number, page = 1, year?: string) => {
   if (USE_MOCK_DATA) return getMockMovies(page)
   const tmdb = axios.create({ baseURL: TMDB_API_URL, params: { api_key: TMDB_API_KEY, language: 'es-ES' } })
-  const { data } = await tmdb.get('/discover/movie', { params: { with_genres: genreId, page } })
+  const params: Record<string, string | number> = { with_genres: genreId, page }
+  if (year) {
+    params['release_date.gte'] = `${year}-01-01`
+    params['release_date.lte'] = `${year}-12-31`
+  }
+  const { data } = await tmdb.get('/discover/movie', { params })
   return data
 }
 
