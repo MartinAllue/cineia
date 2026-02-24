@@ -55,7 +55,10 @@ function ExploreContent() {
         if (sortBy) params.set('sort_by', sortBy)
       }
 
-      if (year) params.set('year', year)
+      // Siempre pasar el año si existe
+      if (year && year.length === 4) {
+        params.set('year', year)
+      }
 
       const res = await fetch(`/api/movies/search?${params.toString()}`)
       const data: MoviesResponse = await res.json()
@@ -115,15 +118,17 @@ function ExploreContent() {
 
           <div>
             <label className="block text-gray-400 text-sm mb-2">Año</label>
-            <input
-              type="number"
+            <select
               value={year}
               onChange={(e) => updateParams('year', e.target.value)}
-              placeholder="2024"
-              min="1900"
-              max="2030"
               className="w-full bg-[#2a2a2a] text-white px-3 py-2 rounded border border-[#333] focus:border-red-500 focus:outline-none"
-            />
+            >
+              <option value="">Todos</option>
+              {[...Array(30)].map((_, i) => {
+                const y = new Date().getFullYear() - i
+                return <option key={y} value={y}>{y}</option>
+              })}
+            </select>
           </div>
 
           <button
